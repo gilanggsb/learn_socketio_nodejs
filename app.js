@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 
 let countUserOnline = 0;
 io.on('connection', socket => {
-    socket.on('join', param => {
+    socket.on('join_chat', param => {
         countUserOnline++;
         console.log(`user join ${param} user ${countUserOnline}`);
         io.emit('countUserOnline', countUserOnline);
@@ -23,13 +23,15 @@ io.on('connection', socket => {
         io.emit('receive_message', param);
     });
 
-    socket.on('disconnect', param => {
-        console.log(`user disconnect ${param}`);
-        if (countUserOnline > -1) {
+    socket.on('leave_chat', param => {
+        if (countUserOnline > 0) {
             countUserOnline--;
         }
+        console.log(`user disconnect ${countUserOnline}`);
         io.emit('countUserOnline', countUserOnline);
     });
+
+
 })
 
 server.listen(port, () => {
