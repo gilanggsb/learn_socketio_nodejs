@@ -18,7 +18,7 @@ io.on('connection', socket => {
         io.emit('countUserOnline', countUserOnline);
     });
 
-    socket.on('message', param => {
+    socket.on('send_message', param => {
         console.log(`user mengirim pesan ${param}`);
         io.emit('receive_message', param);
     });
