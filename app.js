@@ -6,7 +6,8 @@ const io = require('socket.io')(server, {
 const port = process.env.PORT || 8080;
 
 app.get('/', (req, res) => {
-    res.sendFile('views/index.html', { root: __dirname })
+    res.send('CONNECT ON SOCKETIO');
+    // res.sendFile('./views/index.html', { root: __dirname })
 })
 
 let countUserOnline = 0;
