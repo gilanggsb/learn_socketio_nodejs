@@ -6,7 +6,6 @@ const port = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
   res.send("CONNECT ON SOCKETIO");
-  // res.sendFile('./views/index.html', { root: __dirname })
 });
 
 let countUserOnline = historyData.userOnline;
@@ -14,7 +13,7 @@ io.on("connection", (socket) => {
   socket.on("join_chat", (param) => {
     countUserOnline++;
     historyData.userOnline = countUserOnline;
-    io.emit("lastAct", historyData);
+    io.emit("last_data", historyData);
   });
 
   socket.on("send_message", (param) => {
@@ -29,7 +28,7 @@ io.on("connection", (socket) => {
   });
   socket.on("request_unmute", (param) => {
     historyData.data.chatData.push(param);
-    io.emit("receive_unmute", param);
+    io.emit("receive_call", param);
   });
 
   socket.on("leave_chat", (param) => {
