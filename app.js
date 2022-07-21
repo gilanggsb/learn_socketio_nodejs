@@ -25,6 +25,13 @@ io.on("connection", (socket) => {
     historyData.data.chatData.push(param);
     io.emit("receive_file", param);
   });
+
+  socket.on("delete_chat", (param) => {
+    const chatData = historyData.data.chatData;
+    chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
+    io.emit("chat_deleted", param);
+  });
+
   socket.on("request_call", (param) => {
     historyData.data.chatData.push(param);
     io.emit("receive_call", param);
