@@ -18,8 +18,7 @@ io.on("connection", (socket) => {
 
   socket.on("send_message", (param) => {
     historyData.data.chatData.push(param);
-    console.log(`cek useronline on map ${historyData.userOnline}`);
-    io.emit("receive_message", param);
+    io.emit("receive_message", historyData);
   });
 
   socket.on("send_file", (param) => {
