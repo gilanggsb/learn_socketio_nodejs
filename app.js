@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
 
   socket.on("send_message", (param) => {
     historyData.data.chatData.push(param);
-    io.emit("receive_message", historyData);
+    io.emit("receive_message", param);
   });
 
   socket.on("send_file", (param) => {
