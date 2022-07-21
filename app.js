@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     historyData.data.chatData.push(param);
     io.emit("receive_file", param);
   });
-  socket.on("request_unmute", (param) => {
+  socket.on("request_call", (param) => {
     historyData.data.chatData.push(param);
     io.emit("receive_call", param);
   });
@@ -35,7 +35,7 @@ io.on("connection", (socket) => {
     if (countUserOnline > 0) {
       countUserOnline--;
     }
-    console.log(`user disconnect ${countUserOnline}`);
+    historyData.userOnline = countUserOnline;
     io.emit("countUserOnline", countUserOnline);
   });
 });
