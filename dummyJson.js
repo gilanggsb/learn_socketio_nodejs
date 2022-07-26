@@ -371,6 +371,7 @@
 //   },
 // };
 let historyData = {
+  userOnline:0,
   data: {
     chatData: [
       {
