@@ -691,10 +691,10 @@ let historyData = {
       },
       {
         id_message: 3,
-        user_id: "3",
+        user_id: "890",
         user_role: "3",
         user_id_zoom: "497528",
-        user_name: "Sephikar",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message: "Ahkam meminta untuk mengaktifkan mic",
@@ -711,10 +711,10 @@ let historyData = {
       },
       {
         id_message: 4,
-        user_id: "4",
-        user_role: "1",
-        user_id_zoom: "497529",
-        user_name: "Anda",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message:
@@ -732,10 +732,10 @@ let historyData = {
       },
       {
         id_message: 5,
-        user_id: "4",
-        user_role: "1",
-        user_id_zoom: "497529",
-        user_name: "Anda",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message: "Anda menolak permintaan Ahkam untuk mengaktifkan mic",
@@ -752,10 +752,10 @@ let historyData = {
       },
       {
         id_message: 6,
-        user_id: "1",
-        user_role: "1",
-        user_id_zoom: "497526",
-        user_name: "",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message:
@@ -773,10 +773,10 @@ let historyData = {
       },
       {
         id_message: 8,
-        user_id: "1",
-        user_role: "1",
-        user_id_zoom: "497526",
-        user_name: "",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: { message: "Panggilan telah berakhir", url: "" },
         action: { desc: "mic", counter: 3 },
@@ -789,10 +789,10 @@ let historyData = {
       },
       {
         id_message: 9,
-        user_id: "1",
-        user_role: "1",
-        user_id_zoom: "497526",
-        user_name: "",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message: "Panggilan telah berakhir",
@@ -809,10 +809,10 @@ let historyData = {
       },
       {
         id_message: 10,
-        user_id: "1",
-        user_role: "1",
-        user_id_zoom: "497526",
-        user_name: "",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message: "Panggilan telah berakhir",
@@ -933,10 +933,10 @@ let historyData = {
       // contoh guru menerima acc call (GURU)
       {
         id_message: 16,
-        user_id: "34221",
-        user_role: "1",
-        user_id_zoom: "10080568",
-        user_name: "Lani",
+        user_id: "890",
+        user_role: "3",
+        user_id_zoom: "497528",
+        user_name: "Guru Sephikar",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
           message: "Call berhasil diterima",

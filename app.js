@@ -1,3 +1,4 @@
+const { type } = require("os");
 const { emit } = require("process");
 const historyData = require("./dummyJson");
 const app = require("express")();
@@ -23,6 +24,7 @@ io.on("connection", (socket) => {
     historyData.data.chatData.map((chat) => {
       if (chat.chat_type == param.chat_type && chat.user_id == param.user_id) {
         message = chat;
+        message.user_role = param.user_role;
         message.data.message = param.message;
         message.infoAssign = param.infoAssign;
         return;
@@ -32,39 +34,42 @@ io.on("connection", (socket) => {
     historyData.data.chatData.push(message);
     io.emit("message", message);
   });
-  socket.on("callFunction", (param) => {
-    let murid, guru;
-    let result = [];
-    historyData.data.chatData.map((chat) => {
-      if (param.chat_type == 4 && chat.chat_type == 4) {
-        murid = chat;
-        murid.id_user = param.user_id;
-        murid.counter = param.counter;
-        murid.data.message = param.message;
-        murid.infoAssign = param.infoAssign;
-      }
-      if (param.chat_type == 2 && chat.chat_type == 2) {
-        guru = chat;
-        guru.id_user = param.user_id;
-        guru.counter = param.counter;
-        guru.data.message = param.message;
-        guru.infoAssign = param.infoAssign;
-      }
-    });
-    historyData.data.chatData.push(murid, guru);
-    result.push(murid, guru);
-    io.emit("notif", result);
-  });
   socket.on("delete_chat", (param) => {
     const chatData = historyData.data.chatData;
     chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
     io.emit("chat_deleted", param);
   });
 
+  socket.on("callFunction", (param) => {
+    let murid, guru;
+    let result = [];
+    for (var chat of historyData.data.chatData) {
+      if (chat.user_id == param.infoAssign.id_user_student) {
+        murid = chat;
+        murid.counter = param.counter;
+        murid.data.message = param.message;
+        murid.infoAssign = param.infoAssign;
+      }
+      if (chat.user_id == param.infoAssign.id_user_teacher) {
+        guru = chat;
+        guru.counter = param.counter;
+        guru.data.message = param.message;
+        guru.infoAssign = param.infoAssign;
+      }
+      if (murid != null && guru != null) break;
+    }
+    historyData.data.chatData.push(murid, guru);
+    result.push(murid, guru);
+    io.emit("notif", result);
+  });
+
   socket.on("sendFile", (param) => {
     let resultFile;
-    historyData.data.chatData.map((chat)=>{
-      if(chat.chat_type === param.chat_type && chat.user_id == param.user_id){
+    historyData.data.chatData.map((chat) => {
+      if (
+        chat.chat_type === param.chat_type &&
+        chat.user_id === param.user_id
+      ) {
         resultFile = chat;
         resultFile.data.url = param.url;
         resultFile.data.fileName = param.fileName;
