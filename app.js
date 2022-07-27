@@ -22,6 +22,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chatMessage", (param) => {
+    console.log(`ini chatMessage ${JSON.stringify(param)}`);
     let message;
     for (var chat of historyData.data.chatData) {
       if (chat.user_id == param.user_id) {
@@ -43,6 +44,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("callFunction", (param) => {
+    console.log(`ini callFunction ${JSON.stringify(param)}`);
     let murid, guru;
     let result = [];
     for (const chat of historyData.data.chatData) {
@@ -78,6 +80,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendFile", (param) => {
+    console.log(`ini sendFile ${JSON.stringify(param)}`);
     let resultFile;
     for (var chat of historyData.data.chatData) {
       if (chat.chat_type === param.chat_type) {
@@ -96,6 +99,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave_chat", (param) => {
+    console.log(`ini leave chat ${JSON.stringify(param)}`);
     if (countUserOnline > 0) {
       countUserOnline--;
     }
@@ -103,14 +107,7 @@ io.on("connection", (socket) => {
     io.emit("countUserOnline", countUserOnline);
   });
   socket.on("reset_data", (param) => {
-    console.log(
-      `reset sebelum static data length ${historyDatas.data.chatData.length} history ${historyData.data.chatData.length}`
-    );
     historyData = cloneObject(historyDatas);
-    console.log(
-      `reset sesudah static data length ${historyDatas.data.chatData.length} history ${historyData.data.chatData.length}`
-    );
-    // historyData.userOnline = countUserOnline;
     io.emit("response_reset", "sukses");
   });
 });
