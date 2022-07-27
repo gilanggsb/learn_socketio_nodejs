@@ -370,7 +370,7 @@
 //     ],
 //   },
 // };
-let historyData = {
+let historyDatas = {
   userOnline:0,
   data: {
     chatData: [
@@ -974,4 +974,4 @@ let historyData = {
     ],
   },
 };
-module.exports = historyData;
+module.exports = historyDatas;

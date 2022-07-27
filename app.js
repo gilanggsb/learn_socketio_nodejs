@@ -1,15 +1,17 @@
+const { stat } = require("fs");
 const { type } = require("os");
 const { emit } = require("process");
-const historyData = require("./dummyJson");
+const historyDatas = require("./dummyJson");
 const app = require("express")();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {});
 const port = process.env.PORT || 8080;
+let historyData;
 
 app.get("/", (req, res) => {
   res.send("CONNECT ON SOCKETIO");
 });
-
+historyData = cloneObject(historyDatas);
 let countUserOnline = historyData.userOnline;
 io.on("connection", (socket) => {
   console.log(`ini socket ${socket.id}`);
@@ -96,6 +98,17 @@ io.on("connection", (socket) => {
     }
     historyData.userOnline = countUserOnline;
     io.emit("countUserOnline", countUserOnline);
+  });
+  socket.on("reset_data", (param) => {
+    console.log(
+      `reset sebelum static data length ${historyDatas.data.chatData.length} history ${historyData.data.chatData.length}`
+    );
+    historyData = cloneObject(historyDatas);
+    console.log(
+      `reset sesudah static data length ${historyDatas.data.chatData.length} history ${historyData.data.chatData.length}`
+    );
+    // historyData.userOnline = countUserOnline;
+    io.emit("response_reset", "sukses");
   });
 });
 
