@@ -80,10 +80,13 @@ io.on("connection", (socket) => {
   socket.on("sendFile", (param) => {
     let resultFile;
     for (var chat of historyData.data.chatData) {
-      if (chat.user_id === param.user_id) {
+      if (chat.chat_type === param.chat_type) {
         resultFile = cloneObject(chat);
+        resultFile.user_id = param.user_id;
+        resultFile.data.message = param.message;
+        resultFile.action.counter = param.counter;
+        resultFile.infoAssign = param.infoAssign;
         resultFile.data.url = param.url;
-        resultFile.chat_type = param.chat_type;
         resultFile.data.fileName = param.fileName;
         break;
       }
