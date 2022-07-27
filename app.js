@@ -24,54 +24,29 @@ io.on("connection", (socket) => {
   socket.on("chatMessage", (param) => {
     console.log(`ini chatMessage ${JSON.stringify(param)}`);
     let message;
-    for (var chat of historyData.data.chatData) {
-      if (chat.user_id == param.user_id) {
-        message = cloneObject(chat);
-        message.user_role = param.user_role;
-        message.data.message = param.message;
-        message.infoAssign = param.infoAssign;
-        message.chat_type = param.chat_type;
+    for (let chat of historyData.data.chatData) {
+      if (chat.chat_type === 1) {
+        message = createSocketObject(param, chat);
         break;
       }
     }
     historyData.data.chatData.push(message);
     io.emit("message", message);
   });
-  socket.on("delete_chat", (param) => {
-    const chatData = historyData.data.chatData;
-    chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
-    io.emit("chat_deleted", param);
-  });
-
   socket.on("callFunction", (param) => {
     console.log(`ini callFunction ${JSON.stringify(param)}`);
     let murid, guru;
     let result = [];
     for (const chat of historyData.data.chatData) {
-      if (
-        chat.user_id == param.infoAssign.id_user_student &&
-        murid == undefined
-      ) {
-        murid = cloneObject(chat);
-        murid.action.counter = param.counter;
-        murid.data.message = param.message;
+      if (chat.chat_type === 4 && murid == undefined) {
+        murid = createSocketObject(param, chat);
         murid.chat_type = 4;
-        murid.infoAssign = param.infoAssign;
       }
-      if (
-        chat.user_id == param.infoAssign.id_user_teacher &&
-        guru == undefined
-      ) {
-        guru = cloneObject(chat);
-        guru.action.counter = param.counter;
-        guru.data.message = param.message;
+      if (chat.chat_type === 2 && guru == undefined) {
+        guru = createSocketObject(param, chat);
         guru.chat_type = 2;
-        guru.infoAssign = param.infoAssign;
       }
-      if (
-        (murid != null && guru != null) ||
-        (murid != undefined && guru != undefined)
-      )
+      if ((murid != null && guru != null) || (murid != undefined && guru != undefined))
         break;
     }
     historyData.data.chatData.push(murid, guru);
@@ -83,14 +58,8 @@ io.on("connection", (socket) => {
     console.log(`ini sendFile ${JSON.stringify(param)}`);
     let resultFile;
     for (var chat of historyData.data.chatData) {
-      if (chat.chat_type === param.chat_type) {
-        resultFile = cloneObject(chat);
-        resultFile.user_id = param.user_id;
-        resultFile.data.message = param.message;
-        resultFile.action.counter = param.counter;
-        resultFile.infoAssign = param.infoAssign;
-        resultFile.data.url = param.url;
-        resultFile.data.fileName = param.fileName;
+      if (chat.chat_type === 3) {
+        resultFile = createSocketObject(param, chat);
         break;
       }
     }
@@ -104,13 +73,47 @@ io.on("connection", (socket) => {
       countUserOnline--;
     }
     historyData.userOnline = countUserOnline;
-    io.emit("countUserOnline", countUserOnline);
+    io.emit("response_leave", historyData);
+  });
+  socket.on("delete_chat", (param) => {
+    let result;
+    const chatData = historyData.data.chatData;
+    let diff = chatData.length - param.deleteCount;
+    console.log(`ini dif ${diff}`);
+    result = `Maaf, Sudah tidak bisa delete chat!!`;
+    if (chatData.length > historyDatas.data.chatData.length && diff >= historyDatas.data.chatData.length) {
+      result = { "sebelumDelete": historyData.data.chatData.length };
+      chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
+      result.sesudahDelete = historyData.data.chatData.length;
+    }
+    io.emit("response_deleted", result);
   });
   socket.on("reset_data", (param) => {
+    let result = { "sebelumReset": historyData.data.chatData.length };
     historyData = cloneObject(historyDatas);
-    io.emit("response_reset", "sukses");
+    result.sesudahReset = historyData.data.chatData.length;
+    io.emit("response_reset", result);
   });
 });
+
+function createSocketObject(param, chat) {
+  let tempObject = cloneObject(chat);
+  tempObject.id_message += 1;
+  if (param.user_id != null && param.user_id != undefined && chat.chat_type === param.chat_type) tempObject.user_id = param.user_id
+  if (param.user_name != null && param.user_name != undefined && chat.chat_type === param.chat_type) tempObject.user_name = param.user_name
+  if (param.user_role != null && param.user_role != undefined && chat.chat_type === param.chat_type) tempObject.user_role = param.user_role
+  if (param.user_id_zoom != null && param.user_id_zoom != undefined && chat.chat_type === param.chat_type) tempObject.user_id_zoom = param.user_id_zoom
+  if (param.avatar != null && param.avatar != undefined) tempObject.avatar = param.avatar
+  if (param.message != null && param.message != undefined) tempObject.data.message = param.message
+  if (param.url != null && param.url != undefined) tempObject.data.url = param.url
+  if (param.fileName != null && param.fileName != undefined) tempObject.data.fileName = param.fileName
+  if (param.counter != null && param.counter != undefined) tempObject.action.counter = param.counter
+  if (param.desc != null && param.desc != undefined) tempObject.action.desc = param.desc
+  if (param.infoAssign != null && param.infoAssign != undefined) tempObject.infoAssign = param.infoAssign
+  if (param.timestamp != null && param.timestamp != undefined && chat.chat_type === param.chat_type) tempObject.timestamp = param.timestamp
+  if (param.status != null && param.status != undefined) tempObject.status = param.status
+  return tempObject;
+}
 
 function cloneObject(obj) {
   let temp = JSON.stringify(obj);

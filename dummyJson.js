@@ -371,7 +371,7 @@
 //   },
 // };
 let historyDatas = {
-  userOnline:0,
+  userOnline: 0,
   data: {
     chatData: [
       {
@@ -967,7 +967,7 @@ let historyDatas = {
           id_user_teacher: 34221,
           id_user_student: 2
         },
-        action: { desc: "upload", counter: 1 },
+        action: { desc: "upload", counter: 0 },
         chat_type: 3,
         timestamp: "2022-06-12 14:30:13",
       },
