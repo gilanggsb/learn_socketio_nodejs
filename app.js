@@ -2,23 +2,54 @@ const { stat } = require("fs");
 const { type } = require("os");
 const { emit } = require("process");
 const historyDatas = require("./dummyJson");
+const requestDataPag = require("./dataPagination");
 const app = require("express")();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {});
 const port = process.env.PORT || 8080;
 let historyData;
 
+historyData = cloneObject(historyDatas);
+let countUserOnline = historyData.userOnline;
+
 app.get("/", (req, res) => {
   res.send("CONNECT ON SOCKETIO");
 });
-historyData = cloneObject(historyDatas);
-let countUserOnline = historyData.userOnline;
 io.on("connection", (socket) => {
   console.log(`ini socket ${socket.id}`);
   socket.on("joinRoom", (param) => {
     countUserOnline++;
     historyData.userOnline = countUserOnline;
     io.emit("getAllHistorical", historyData);
+  });
+  socket.on("getPaginationData", (param) => {
+    console.log(`getPaginationData ${JSON.stringify(param)}`)
+    try {
+      let resultData = [];
+      let objReqPag;
+      validateData(param);
+      for (let data of requestDataPag) {
+        if (param.user_id == data.user_id && param.chat_type == data.chat_type) {
+          data.last_data = param.last_data;
+          data.request_data = param.request_data;
+          objReqPag = data;
+          break;
+        }
+      }
+      if (objReqPag == undefined) requestDataPag.push(createReqPag(param));
+      resultData = getDataPag(param.last_data, param.request_data);
+      console.log(`cek lastData ${resultData.length}`);
+      for (var [index, data] of resultData.entries()) {
+        console.log(`index ${index}  data result : \n${data.id_message}\n`);
+      }
+      for (var data of requestDataPag) {
+        console.log(`ini data request : \n${JSON.stringify(data)}\n`);
+      }
+      io.emit("onPaginationData", historyData);
+    } catch (error) {
+      console.log(`socketError ${error.message}`)
+      io.emit("socketError", error);
+    }
   });
 
   socket.on("chatMessage", (param) => {
@@ -101,13 +132,9 @@ io.on("connection", (socket) => {
     const chatData = historyData.data.chatData;
     let diff = chatData.length - param.deleteCount;
     result = `Maaf, Sudah tidak bisa delete chat!!`;
-    if (
-      chatData.length > historyDatas.data.chatData.length &&
-      diff >= historyDatas.data.chatData.length
-    ) {
+    if (chatData.length > historyDatas.data.chatData.length && diff >= historyDatas.data.chatData.length) {
       result = { sebelumDelete: historyData.data.chatData.length };
-      chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
-      result.sesudahDelete = historyData.data.chatData.length;
+      chatData.splice(chatData.length - param.deleteCount, param.deleteCount); result.sesudahDelete = historyData.data.chatData.length;
     }
     io.emit("response_deleted", result);
   });
@@ -118,6 +145,22 @@ io.on("connection", (socket) => {
     io.emit("response_reset", result);
   });
 });
+
+function createReqPag(param) {
+  return {
+    "user_id": param.user_id,
+    "user_name": param.user_name,
+    "chat_type": param.chat_type,
+    "last_data": param.last_data,
+    "request_data": param.request_data,
+  }
+}
+
+
+function getDataPag(last_data, request_data) {
+  const chatData = [...historyData.data.chatData];
+  return chatData.slice(last_data, last_data + request_data);
+}
 
 function validateData(param) {
   if (param.user_id == null || param.user_id == undefined)
@@ -131,29 +174,12 @@ function validateData(param) {
 function createSocketObject(param, chat) {
   let tempObject = cloneObject(chat);
   tempObject.id_message += 1;
-  if (
-    param.user_id != null &&
-    param.user_id != undefined &&
-    chat.chat_type === param.chat_type
-  )
+  if (chat.chat_type === param.chat_type) {
     tempObject.user_id = param.user_id;
-  if (
-    param.user_name != null &&
-    param.user_name != undefined &&
-    chat.chat_type === param.chat_type
-  )
     tempObject.user_name = param.user_name;
-  if (
-    param.user_role != null &&
-    param.user_role != undefined &&
-    chat.chat_type === param.chat_type
-  )
     tempObject.user_role = param.user_role;
-  if (
-    param.user_id_zoom != null &&
-    param.user_id_zoom != undefined &&
-    chat.chat_type === param.chat_type
-  )
+  }
+  if (param.user_id_zoom != null && param.user_id_zoom != undefined && chat.chat_type === param.chat_type)
     tempObject.user_id_zoom = param.user_id_zoom;
   if (param.avatar != null && param.avatar != undefined)
     tempObject.avatar = param.avatar;
