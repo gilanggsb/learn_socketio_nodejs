@@ -90,17 +90,11 @@ io.on("connection", (socket) => {
 
   socket.on("leave_chat", (param) => {
     console.log(`ini leave chat ${JSON.stringify(param)}`);
-    try {
-      validateData(param);
-      if (countUserOnline > 0) {
-        countUserOnline--;
-      }
-      historyData.userOnline = countUserOnline;
-      io.emit("response_leave", historyData);
-    } catch (error) {
-      console.log(`socket Error ${error}`);
-      io.emit("socketError", error);
+    if (countUserOnline > 0) {
+      countUserOnline--;
     }
+    historyData.userOnline = countUserOnline;
+    io.emit("response_leave", historyData);
   });
   socket.on("delete_chat", (param) => {
     let result;
