@@ -23,95 +23,166 @@ io.on("connection", (socket) => {
 
   socket.on("chatMessage", (param) => {
     console.log(`ini chatMessage ${JSON.stringify(param)}`);
-    let message;
-    for (let chat of historyData.data.chatData) {
-      if (chat.chat_type === 1) {
-        message = createSocketObject(param, chat);
-        break;
+    try {
+      validateData(param);
+      let message;
+      for (let chat of historyData.data.chatData) {
+        if (chat.chat_type === 1) {
+          message = createSocketObject(param, chat);
+          break;
+        }
       }
+      historyData.data.chatData.push(message);
+      io.emit("message", message);
+    } catch (error) {
+      console.log(`socket Error ${error}`);
+      io.emit("socketError", error);
     }
-    historyData.data.chatData.push(message);
-    io.emit("message", message);
   });
   socket.on("callFunction", (param) => {
     console.log(`ini callFunction ${JSON.stringify(param)}`);
-    let murid, guru;
-    let result = [];
-    for (const chat of historyData.data.chatData) {
-      if (chat.chat_type === 4 && murid == undefined) {
-        murid = createSocketObject(param, chat);
-        murid.chat_type = 4;
+    try {
+      validateData(param);
+      let murid, guru;
+      let result = [];
+      for (const chat of historyData.data.chatData) {
+        if (chat.chat_type === 4 && murid == undefined) {
+          murid = createSocketObject(param, chat);
+          murid.chat_type = 4;
+        }
+        if (chat.chat_type === 2 && guru == undefined) {
+          guru = createSocketObject(param, chat);
+          guru.chat_type = 2;
+        }
+        if (
+          (murid != null && guru != null) ||
+          (murid != undefined && guru != undefined)
+        )
+          break;
       }
-      if (chat.chat_type === 2 && guru == undefined) {
-        guru = createSocketObject(param, chat);
-        guru.chat_type = 2;
-      }
-      if ((murid != null && guru != null) || (murid != undefined && guru != undefined))
-        break;
+      historyData.data.chatData.push(murid, guru);
+      result.push(murid, guru);
+      io.emit("notif", result);
+    } catch (error) {
+      console.log(`socket Error ${error}`);
+      io.emit("socketError", error);
     }
-    historyData.data.chatData.push(murid, guru);
-    result.push(murid, guru);
-    io.emit("notif", result);
   });
 
   socket.on("sendFile", (param) => {
     console.log(`ini sendFile ${JSON.stringify(param)}`);
-    let resultFile;
-    for (var chat of historyData.data.chatData) {
-      if (chat.chat_type === 3) {
-        resultFile = createSocketObject(param, chat);
-        break;
+    try {
+      validateData(param);
+      let resultFile;
+      for (var chat of historyData.data.chatData) {
+        if (chat.chat_type === 3) {
+          resultFile = createSocketObject(param, chat);
+          break;
+        }
       }
+      historyData.data.chatData.push(resultFile);
+      io.emit("notif", resultFile);
+    } catch (error) {
+      console.log(`socket Error ${error}`);
+      io.emit("socketError", error);
     }
-    historyData.data.chatData.push(resultFile);
-    io.emit("notif", resultFile);
   });
 
   socket.on("leave_chat", (param) => {
     console.log(`ini leave chat ${JSON.stringify(param)}`);
-    if (countUserOnline > 0) {
-      countUserOnline--;
+    try {
+      validateData(param);
+      if (countUserOnline > 0) {
+        countUserOnline--;
+      }
+      historyData.userOnline = countUserOnline;
+      io.emit("response_leave", historyData);
+    } catch (error) {
+      console.log(`socket Error ${error}`);
+      io.emit("socketError", error);
     }
-    historyData.userOnline = countUserOnline;
-    io.emit("response_leave", historyData);
   });
   socket.on("delete_chat", (param) => {
     let result;
     const chatData = historyData.data.chatData;
     let diff = chatData.length - param.deleteCount;
-    console.log(`ini dif ${diff}`);
     result = `Maaf, Sudah tidak bisa delete chat!!`;
-    if (chatData.length > historyDatas.data.chatData.length && diff >= historyDatas.data.chatData.length) {
-      result = { "sebelumDelete": historyData.data.chatData.length };
+    if (
+      chatData.length > historyDatas.data.chatData.length &&
+      diff >= historyDatas.data.chatData.length
+    ) {
+      result = { sebelumDelete: historyData.data.chatData.length };
       chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
       result.sesudahDelete = historyData.data.chatData.length;
     }
     io.emit("response_deleted", result);
   });
   socket.on("reset_data", (param) => {
-    let result = { "sebelumReset": historyData.data.chatData.length };
+    let result = { sebelumReset: historyData.data.chatData.length };
     historyData = cloneObject(historyDatas);
     result.sesudahReset = historyData.data.chatData.length;
     io.emit("response_reset", result);
   });
 });
 
+function validateData(param) {
+  if (param.user_id == null || param.user_id == undefined)
+    throw "User ID tidak boleh Kosong!!!";
+  if (param.user_name == null || param.user_name == undefined)
+    throw "User Name tidak boleh Kosong!!!";
+  if (param.chat_type == null || param.chat_type == undefined)
+    throw "Chat Type tidak boleh Kosong!!!";
+}
+
 function createSocketObject(param, chat) {
   let tempObject = cloneObject(chat);
   tempObject.id_message += 1;
-  if (param.user_id != null && param.user_id != undefined && chat.chat_type === param.chat_type) tempObject.user_id = param.user_id
-  if (param.user_name != null && param.user_name != undefined && chat.chat_type === param.chat_type) tempObject.user_name = param.user_name
-  if (param.user_role != null && param.user_role != undefined && chat.chat_type === param.chat_type) tempObject.user_role = param.user_role
-  if (param.user_id_zoom != null && param.user_id_zoom != undefined && chat.chat_type === param.chat_type) tempObject.user_id_zoom = param.user_id_zoom
-  if (param.avatar != null && param.avatar != undefined) tempObject.avatar = param.avatar
-  if (param.message != null && param.message != undefined) tempObject.data.message = param.message
-  if (param.url != null && param.url != undefined) tempObject.data.url = param.url
-  if (param.fileName != null && param.fileName != undefined) tempObject.data.fileName = param.fileName
-  if (param.counter != null && param.counter != undefined) tempObject.action.counter = param.counter
-  if (param.desc != null && param.desc != undefined) tempObject.action.desc = param.desc
-  if (param.infoAssign != null && param.infoAssign != undefined) tempObject.infoAssign = param.infoAssign
-  if (param.timestamp != null && param.timestamp != undefined && chat.chat_type === param.chat_type) tempObject.timestamp = param.timestamp
-  if (param.status != null && param.status != undefined) tempObject.status = param.status
+  if (
+    param.user_id != null &&
+    param.user_id != undefined &&
+    chat.chat_type === param.chat_type
+  )
+    tempObject.user_id = param.user_id;
+  if (
+    param.user_name != null &&
+    param.user_name != undefined &&
+    chat.chat_type === param.chat_type
+  )
+    tempObject.user_name = param.user_name;
+  if (
+    param.user_role != null &&
+    param.user_role != undefined &&
+    chat.chat_type === param.chat_type
+  )
+    tempObject.user_role = param.user_role;
+  if (
+    param.user_id_zoom != null &&
+    param.user_id_zoom != undefined &&
+    chat.chat_type === param.chat_type
+  )
+    tempObject.user_id_zoom = param.user_id_zoom;
+  if (param.avatar != null && param.avatar != undefined)
+    tempObject.avatar = param.avatar;
+  if (param.message != null && param.message != undefined)
+    tempObject.data.message = param.message;
+  if (param.url != null && param.url != undefined)
+    tempObject.data.url = param.url;
+  if (param.fileName != null && param.fileName != undefined)
+    tempObject.data.fileName = param.fileName;
+  if (param.counter != null && param.counter != undefined)
+    tempObject.action.counter = param.counter;
+  if (param.desc != null && param.desc != undefined)
+    tempObject.action.desc = param.desc;
+  if (param.infoAssign != null && param.infoAssign != undefined)
+    tempObject.infoAssign = param.infoAssign;
+  if (
+    param.timestamp != null &&
+    param.timestamp != undefined &&
+    chat.chat_type === param.chat_type
+  )
+    tempObject.timestamp = param.timestamp;
+  if (param.status != null && param.status != undefined)
+    tempObject.status = param.status;
   return tempObject;
 }
 
