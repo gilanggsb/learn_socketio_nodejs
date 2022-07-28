@@ -384,7 +384,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya raka. ini test kirim me",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -405,7 +405,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya raka. ini test kirim me",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -426,7 +426,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya raka. ini test kirim me",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -447,7 +447,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -468,7 +468,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -489,7 +489,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -510,7 +510,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -531,7 +531,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -552,7 +552,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -573,7 +573,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -594,7 +594,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -615,7 +615,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -636,7 +636,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -657,7 +657,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         infoAssign: {
           id_user_teacher: 34221,
@@ -678,7 +678,7 @@ let historyDatas = {
         data: {
           message: "halo gess, saya sadam. ini test kirim you",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: null, counter: null },
         infoAssign: {
@@ -699,7 +699,7 @@ let historyDatas = {
         data: {
           message: "Ahkam meminta untuk mengaktifkan mic",
           url: null,
-          fileName: null
+          fileName: null,
         },
         action: { desc: "mic", counter: 0 },
         infoAssign: {
@@ -720,7 +720,7 @@ let historyDatas = {
           message:
             "Anda menerima permintaan ahkam untuk mengaktifkan mikrophone",
           url: "",
-          fileName: null
+          fileName: null,
         },
         action: { desc: "mic", counter: 1 },
         infoAssign: {
@@ -740,7 +740,7 @@ let historyDatas = {
         data: {
           message: "Anda menolak permintaan Ahkam untuk mengaktifkan mic",
           url: "",
-          fileName: null
+          fileName: null,
         },
         action: { desc: "mic", counter: 2 },
         infoAssign: {
@@ -761,7 +761,7 @@ let historyDatas = {
           message:
             "Anda sedang menerima permintaan Ahkam untuk mengaktifkan mic",
           url: "",
-          fileName: null
+          fileName: null,
         },
         action: { desc: "mic", counter: 4 },
         infoAssign: {
@@ -961,14 +961,37 @@ let historyDatas = {
         data: {
           message: "",
           url: "staging-guru.kelaspintar.id/testUpload.pdf",
-          fileName: 'testUpload.pdf'
+          fileName: "testUpload.pdf",
         },
         infoAssign: {
           id_user_teacher: 34221,
-          id_user_student: 2
+          id_user_student: 2,
         },
         action: { desc: "upload", counter: 0 },
         chat_type: 3,
+        timestamp: "2022-06-12 14:30:13",
+      },
+      {
+        id_message: 15,
+        user_id: "13376649",
+        user_role: "3",
+        user_id_zoom: "10080568",
+        user_name: "jo",
+        avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
+        data: {
+          message: "Jo Mengirim pesan",
+          url: "",
+          fileName: "",
+        },
+        infoAssign: {
+          id_user_student: 13376649,
+          id_user_teacher: 890,
+        },
+        action: {
+          desc: "upload",
+          counter: 0,
+        },
+        chat_type: 1,
         timestamp: "2022-06-12 14:30:13",
       },
     ],
