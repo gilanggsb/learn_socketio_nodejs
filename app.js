@@ -30,14 +30,14 @@ io.on("connection", (socket) => {
       validateData(param);
       for (let data of requestDataPag) {
         if (param.user_id == data.user_id && param.chat_type == data.chat_type) {
-          data.last_data = param.last_data;
-          data.request_data = param.request_data;
+          data.page = param.page;
+          data.row_per_page = param.row_per_page;
           objReqPag = data;
           break;
         }
       }
       if (objReqPag == undefined) requestDataPag.push(createReqPag(param));
-      resultData = getDataPag(param.last_data, param.request_data);
+      resultData = getDataPag(param.page, param.row_per_page);
       console.log(`cek lastData ${resultData.length}`);
       for (var [index, data] of resultData.entries()) {
         console.log(`index ${index}  data result : \n${data.id_message}\n`);
@@ -151,15 +151,15 @@ function createReqPag(param) {
     "user_id": param.user_id,
     "user_name": param.user_name,
     "chat_type": param.chat_type,
-    "last_data": param.last_data,
-    "request_data": param.request_data,
+    "page": param.page,
+    "row_per_page": param.row_per_page,
   }
 }
 
 
-function getDataPag(last_data, request_data) {
+function getDataPag(page, row_per_page) {
   const chatData = [...historyData.data.chatData];
-  return chatData.slice(last_data, last_data + request_data);
+  return chatData.slice(page, page + row_per_page);
 }
 
 function validateData(param) {
