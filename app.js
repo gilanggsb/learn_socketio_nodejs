@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
       for (var data of requestDataPag) {
         console.log(`ini data request : \n${JSON.stringify(data)}\n`);
       }
-      io.emit("onPaginationData", historyData);
+      io.emit("onPaginationData", resultData);
     } catch (error) {
       console.log(`socketError ${error.message}`)
       io.emit("socketError", error);
