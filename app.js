@@ -65,14 +65,12 @@ io.on("connection", (socket) => {
 
   socket.on("chatMessage", (param) => {
     console.log(`ini chatMessage ${JSON.stringify(param)}`);
-    let today = new Date().toISOString();
     try {
       validateData(param);
       let message;
       for (let chat of historyData.data.chatData) {
         if (chat.chat_type === 1) {
           message = createSocketObject(param, chat);
-          message.timestamp = today;
           break;
         }
       }
@@ -191,6 +189,8 @@ function validateData(param) {
 function createSocketObject(param, chat) {
   let tempObject = cloneObject(chat);
   tempObject.id_message += 1;
+  tempObject.timestamp = new Date().toISOString();
+
   if (chat.chat_type === param.chat_type) {
     tempObject.user_id = param.user_id;
     tempObject.user_name = param.user_name;
@@ -216,12 +216,6 @@ function createSocketObject(param, chat) {
     tempObject.action.desc = param.desc;
   if (param.infoAssign != null && param.infoAssign != undefined)
     tempObject.infoAssign = param.infoAssign;
-  if (
-    param.timestamp != null &&
-    param.timestamp != undefined &&
-    chat.chat_type === param.chat_type
-  )
-    tempObject.timestamp = param.timestamp;
   if (param.status != null && param.status != undefined)
     tempObject.status = param.status;
   return tempObject;
