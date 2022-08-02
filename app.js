@@ -23,21 +23,32 @@ io.on("connection", (socket) => {
     io.emit("getAllHistorical", historyData);
   });
   socket.on("getPaginationData", (param) => {
-    console.log(`getPaginationData ${JSON.stringify(param)}`)
+    console.log(`getPaginationData ${JSON.stringify(param)}`);
     try {
       let resultData = [];
       let objReqPag;
       validateData(param);
+      row = param.row_per_page;
+      if (param.row_per_page == 0) {
+        row = historyData.data.chatData.length - param.page;
+      }
       for (let data of requestDataPag) {
-        if (param.user_id == data.user_id && param.chat_type == data.chat_type) {
+        let row = 0;
+        if (
+          param.user_id == data.user_id &&
+          param.chat_type == data.chat_type
+        ) {
           data.page = param.page;
-          data.row_per_page = param.row_per_page;
+          data.row_per_page = row;
           objReqPag = data;
           break;
         }
       }
-      if (objReqPag == undefined) requestDataPag.push(createReqPag(param));
-      resultData = getDataPag(param.page, param.row_per_page);
+      if (objReqPag == undefined) {
+        param.row_per_page = row;
+        requestDataPag.push(createReqPag(param));
+      }
+      resultData = getDataPag(param.page, row);
       console.log(`cek lastData ${resultData.length}`);
       for (var [index, data] of resultData.entries()) {
         console.log(`index ${index}  data result : \n${data.id_message}\n`);
@@ -47,7 +58,7 @@ io.on("connection", (socket) => {
       }
       io.emit("onPaginationData", resultData);
     } catch (error) {
-      console.log(`socketError ${error.message}`)
+      console.log(`socketError ${error.message}`);
       io.emit("socketError", error);
     }
   });
@@ -135,9 +146,13 @@ io.on("connection", (socket) => {
     const chatData = historyData.data.chatData;
     let diff = chatData.length - param.deleteCount;
     result = `Maaf, Sudah tidak bisa delete chat!!`;
-    if (chatData.length > historyDatas.data.chatData.length && diff >= historyDatas.data.chatData.length) {
+    if (
+      chatData.length > historyDatas.data.chatData.length &&
+      diff >= historyDatas.data.chatData.length
+    ) {
       result = { sebelumDelete: historyData.data.chatData.length };
-      chatData.splice(chatData.length - param.deleteCount, param.deleteCount); result.sesudahDelete = historyData.data.chatData.length;
+      chatData.splice(chatData.length - param.deleteCount, param.deleteCount);
+      result.sesudahDelete = historyData.data.chatData.length;
     }
     io.emit("response_deleted", result);
   });
@@ -151,14 +166,13 @@ io.on("connection", (socket) => {
 
 function createReqPag(param) {
   return {
-    "user_id": param.user_id,
-    "user_name": param.user_name,
-    "chat_type": param.chat_type,
-    "page": param.page,
-    "row_per_page": param.row_per_page,
-  }
+    user_id: param.user_id,
+    user_name: param.user_name,
+    chat_type: param.chat_type,
+    page: param.page,
+    row_per_page: param.row_per_page,
+  };
 }
-
 
 function getDataPag(page, row_per_page) {
   const chatData = [...historyData.data.chatData];
@@ -182,7 +196,11 @@ function createSocketObject(param, chat) {
     tempObject.user_name = param.user_name;
     tempObject.user_role = param.user_role;
   }
-  if (param.user_id_zoom != null && param.user_id_zoom != undefined && chat.chat_type === param.chat_type)
+  if (
+    param.user_id_zoom != null &&
+    param.user_id_zoom != undefined &&
+    chat.chat_type === param.chat_type
+  )
     tempObject.user_id_zoom = param.user_id_zoom;
   if (param.avatar != null && param.avatar != undefined)
     tempObject.avatar = param.avatar;
