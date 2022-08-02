@@ -54,12 +54,14 @@ io.on("connection", (socket) => {
 
   socket.on("chatMessage", (param) => {
     console.log(`ini chatMessage ${JSON.stringify(param)}`);
+    let today = new Date().toISOString();
     try {
       validateData(param);
       let message;
       for (let chat of historyData.data.chatData) {
         if (chat.chat_type === 1) {
           message = createSocketObject(param, chat);
+          message.timestamp = today;
           break;
         }
       }
@@ -127,6 +129,7 @@ io.on("connection", (socket) => {
     historyData.userOnline = countUserOnline;
     io.emit("response_leave", historyData);
   });
+
   socket.on("delete_chat", (param) => {
     let result;
     const chatData = historyData.data.chatData;
