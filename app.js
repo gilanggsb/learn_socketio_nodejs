@@ -27,34 +27,33 @@ io.on("connection", (socket) => {
     try {
       let resultData = [];
       let objReqPag;
+      let limit = 0;
       validateData(param);
-      row = param.row_per_page;
-      if (param.row_per_page == 0) {
-        row = historyData.data.chatData.length - param.page;
+      limit = param.limit;
+      if (param.limit == 0) {
+        limit = historyData.data.chatData.length - param.offset;
       }
       for (let data of requestDataPag) {
-        let row = 0;
         if (
           param.user_id == data.user_id &&
           param.chat_type == data.chat_type
         ) {
-          data.page = param.page;
-          data.row_per_page = row;
+          data.offset = param.offset;
+          data.limit = limit;
           objReqPag = data;
           break;
         }
       }
       if (objReqPag == undefined) {
-        param.row_per_page = row;
+        param.limit = limit;
         requestDataPag.push(createReqPag(param));
       }
-      resultData = getDataPag(param.page, row);
+      resultData = getDataPag(param.offset, limit);
       console.log(`cek lastData ${resultData.length}`);
       for (var [index, data] of resultData.entries()) {
-        console.log(`index ${index}  data result : \n${data.id_message}\n`);
-      }
-      for (var data of requestDataPag) {
-        console.log(`ini data request : \n${JSON.stringify(data)}\n`);
+        console.log(
+          `idMessage ${data.id_message} data result : \n${data.data.message}\n`
+        );
       }
       io.emit("onPaginationData", resultData);
     } catch (error) {
@@ -167,14 +166,14 @@ function createReqPag(param) {
     user_id: param.user_id,
     user_name: param.user_name,
     chat_type: param.chat_type,
-    page: param.page,
-    row_per_page: param.row_per_page,
+    offset: param.offset,
+    limit: param.limit,
   };
 }
 
-function getDataPag(page, row_per_page) {
+function getDataPag(offset, limit) {
   const chatData = [...historyData.data.chatData];
-  return chatData.slice(page, page + row_per_page);
+  return chatData.slice(offset - 1, offset - 1 + limit);
 }
 
 function validateData(param) {
@@ -188,7 +187,9 @@ function validateData(param) {
 
 function createSocketObject(param, chat) {
   let tempObject = cloneObject(chat);
-  tempObject.id_message += 1;
+  let chatData = historyData.data.chatData;
+  let lastIdMessage = chatData[chatData.length - 1].id_message;
+  tempObject.id_message = lastIdMessage + 1;
   tempObject.timestamp = new Date().toISOString();
 
   if (chat.chat_type === param.chat_type) {

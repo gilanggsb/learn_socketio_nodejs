@@ -587,7 +587,7 @@ let historyDatas = {
         user_name: "Raka",
         avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
         data: {
-          message: "",
+          message: "Upload File",
           url: "staging-guru.kelaspintar.id/testUpload.pdf",
           fileName: "testUpload.pdf",
         },
